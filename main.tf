@@ -87,10 +87,7 @@ resource "azurerm_virtual_machine" "catapp" {
   delete_os_disk_on_termination = "true"
 
   storage_image_reference {
-    publisher = var.image_publisher
-    offer     = var.image_offer
-    sku       = var.image_sku
-    version   = var.image_version
+    id = data.azurerm_image.packer.id
   }
 
   storage_os_disk {
@@ -113,62 +110,11 @@ resource "azurerm_virtual_machine" "catapp" {
   tags = {}
 }
 
-# We're using a little trick here so we can run the provisioner without
-# destroying the VM. Do not do this in production.
+data "azurerm_resource_group" "hashidemos" {
+  name = "assareh-hashidemos"
+}
 
-# If you need ongoing management (Day N) of your virtual machines a tool such
-# as Chef or Puppet is a better choice. These tools track the state of
-# individual files and can keep them in the correct configuration.
-
-# Here we do the following steps:
-# Sync everything in files/ to the remote VM.
-# Set up some environment variables for our script.
-# Add execute permissions to our scripts.
-# Run the deploy_app.sh script.
-resource "null_resource" "configure-cat-app" {
-  depends_on = [
-    azurerm_virtual_machine.catapp,
-  ]
-
-  # Terraform 0.11
-  # triggers {
-  #   build_number = "${timestamp()}"
-  # }
-
-  # Terraform 0.12
-  triggers = {
-    build_number = timestamp()
-  }
-
-  provisioner "file" {
-    source      = "files/"
-    destination = "/home/${var.admin_username}/"
-
-    connection {
-      type     = "ssh"
-      user     = var.admin_username
-      password = var.admin_password
-      host     = azurerm_public_ip.catapp-pip.fqdn
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt -y update",
-      "sudo apt -y install apache2",
-      "sudo systemctl start apache2",
-      "sudo chown -R ${var.admin_username}:${var.admin_username} /var/www/html",
-      "chmod +x *.sh",
-      "PLACEHOLDER=${var.placeholder} WIDTH=${var.width} HEIGHT=${var.height} PREFIX=${var.prefix} ./deploy_app.sh",
-      "sudo apt -y install cowsay",
-      "cowsay Mooooooooooo!",
-    ]
-
-    connection {
-      type     = "ssh"
-      user     = var.admin_username
-      password = var.admin_password
-      host     = azurerm_public_ip.catapp-pip.fqdn
-    }
-  }
+data "azurerm_image" "packer" {
+  name                = "assareh-hashidemos"
+  resource_group_name = data.azurerm_resource_group.hashidemos.name
 }
