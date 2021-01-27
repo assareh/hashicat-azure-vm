@@ -29,25 +29,25 @@ variable "vm_size" {
   default     = "Standard_B1s"
 }
 
-variable "image_publisher" {
-  description = "Name of the publisher of the image (az vm image list)"
-  default     = "Canonical"
-}
+# variable "image_publisher" {
+#   description = "Name of the publisher of the image (az vm image list)"
+#   default     = "Canonical"
+# }
 
-variable "image_offer" {
-  description = "Name of the offer (az vm image list)"
-  default     = "UbuntuServer"
-}
+# variable "image_offer" {
+#   description = "Name of the offer (az vm image list)"
+#   default     = "UbuntuServer"
+# }
 
-variable "image_sku" {
-  description = "Image SKU to apply (az vm image list)"
-  default     = "16.04-LTS"
-}
+# variable "image_sku" {
+#   description = "Image SKU to apply (az vm image list)"
+#   default     = "16.04-LTS"
+# }
 
-variable "image_version" {
-  description = "Version of the image to apply (az vm image list)"
-  default     = "latest"
-}
+# variable "image_version" {
+#   description = "Version of the image to apply (az vm image list)"
+#   default     = "latest"
+# }
 
 variable "admin_username" {
   description = "Administrator user name for linux and mysql"
