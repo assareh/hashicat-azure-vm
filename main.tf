@@ -106,7 +106,9 @@ resource "azurerm_virtual_machine" "catapp" {
     disable_password_authentication = false
   }
 
-  tags = {}
+  tags = {
+    environment = "Production"
+  }
 }
 
 data "azurerm_resource_group" "hashidemos" {
