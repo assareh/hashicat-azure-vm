@@ -108,6 +108,8 @@ resource "azurerm_virtual_machine" "catapp" {
 
   tags = {
     environment = "Production"
+    ttl = "1"
+    owner = "andy"
   }
 }
 
